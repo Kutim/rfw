@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+  rfw:
+    build: .
+    command: bin/rfw
+    volumes:
+      - .:/code
+    ports:
+      - 7390:7390
+      - 7393:7393
+    privileged: true
