@@ -29,9 +29,9 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import socket, os, base64, logging
-from SocketServer import BaseServer, BaseRequestHandler
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from SimpleHTTPServer import SimpleHTTPRequestHandler
+from socketserver import BaseServer, BaseRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import SimpleHTTPRequestHandler
 import ssl
 
 # Follow the logging convention:

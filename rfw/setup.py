@@ -34,10 +34,10 @@ from setuptools import setup
 
 pytver = sys.version_info
 
-if pytver[0] == 2 and pytver[1] >= 7:
+if pytver[0] == 3 and pytver[1] >= 6:
     pass
 else:
-    print("rfw requires python 2.7")
+    print("rfw requires python 3.6")
     sys.exit(1)
 
 

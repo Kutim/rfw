@@ -32,19 +32,19 @@
 from __future__ import print_function
 import sys
 pytver = sys.version_info
-if pytver[0] == 2 and pytver[1] >= 7:
+if pytver[0] == 3 and pytver[1] >= 6:
     pass
 else:
-    print("rfw requires python 2.7")
+    print("rfw requires python 3.6")
     sys.exit(1)
 
 
 import argparse, logging, re, sys, struct, socket, subprocess, signal, time, json, os
-from Queue import Queue, PriorityQueue
+from queue import Queue, PriorityQueue
 from threading import Thread
-import config, rfwconfig, cmdparse, iputil, rfwthreads, iptables
-from sslserver import SSLServer, PlainServer, BasicAuthRequestHandler, CommonRequestHandler
-from iptables import Iptables
+from rfw import config, rfwconfig, cmdparse, iputil, rfwthreads, iptables
+from rfw.sslserver import SSLServer, PlainServer, BasicAuthRequestHandler, CommonRequestHandler
+from rfw.iptables import Iptables
 
    
 log = logging.getLogger('rfw')
@@ -68,7 +68,7 @@ def create_requesthandlers(rfwconf, cmd_queue, expiry_queue):
                 ver = mo.group(1)
             else:
                 log.error('Could not find version string in {}'.format(version_file))
-    except IOError, e:
+    except IOError as e:
         log.error('Could not read {}: {} {}'.format(version_file, e.strerror, e.filename))
     server_ver = 'SecurityKISS rfw/{}'.format(ver)
 
@@ -122,7 +122,7 @@ def create_requesthandlers(rfwconf, cmd_queue, expiry_queue):
                 return handler.http_resp(200, ctup)
             else:
                 raise Exception('Unrecognized command.')
-        except Exception, e:
+        except Exception as e:
             msg = 'ERROR: {}'.format(e.message)
             # logging as error disabled - bad client request is not an error 
             # log.exception(msg)
@@ -211,7 +211,7 @@ def startup_sanity_check():
         Iptables.verify_install()
         Iptables.verify_permission()
         Iptables.verify_original()
-    except Exception, e:
+    except Exception as e:
         log.critical(e)
         sys.exit(1)
 
@@ -262,7 +262,7 @@ def rfw_init_rules(rfwconf):
         try:
             Iptables.exe(['-D', 'INPUT', '-p', 'tcp', '--dport', rfw_port, '-s', ip, '-j', 'ACCEPT'])
             Iptables.exe(['-D', 'OUTPUT', '-p', 'tcp', '--sport', rfw_port, '-d', ip, '-j', 'ACCEPT'])
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             pass  # ignore
         Iptables.exe(['-I', 'INPUT', '-p', 'tcp', '--dport', rfw_port, '-s', ip, '-j', 'ACCEPT'])
         Iptables.exe(['-I', 'OUTPUT', '-p', 'tcp', '--sport', rfw_port, '-d', ip, '-j', 'ACCEPT'])
@@ -273,7 +273,7 @@ def main():
     args = parse_args()
     try:
         config.set_logging(log, args.loglevelnum, args.logfile, args.v)
-    except config.ConfigError, e:
+    except config.ConfigError as e:
         perr(e.message)
         sys.exit(1)
 
@@ -285,7 +285,7 @@ def main():
 
     try:
         rfwconf = rfwconfig.RfwConfig(args.configfile)
-    except IOError, e:
+    except IOError as e:
         perr(e.message)
         create_args_parser().print_usage()
         sys.exit(1)

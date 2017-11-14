@@ -30,7 +30,7 @@
 
 from __future__ import print_function
 import logging, sys, types, os.path, re
-from ConfigParser import RawConfigParser, NoOptionError
+from configparser import RawConfigParser, NoOptionError
 
 # Follow the logging convention:
 # - Modules intended as reusable libraries have names 'lib.<modulename>' what allows to configure single parent 'lib' logger for all libraries in the consuming application
@@ -114,7 +114,7 @@ def set_logging(log, loglevelnum, logfile, verbose_console=False):
         log.addHandler(ch)
         # add log file handler for libraries according to the logging convention
         logging.getLogger('lib').addHandler(fh)    
-    except IOError, e:
+    except IOError as e:
         msg = str(e)
         if e.errno == 13:
             msg += '\nYou need to be root'

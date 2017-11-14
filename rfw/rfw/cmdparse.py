@@ -28,9 +28,9 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import sys, logging, urlparse, re
-import iputil, timeutil, iptables
-from iptables import Rule
+import sys, logging, urllib, re
+from rfw import iputil, timeutil, iptables
+from rfw.iptables import Rule
 
 log = logging.getLogger("rfw.cmdparse")
 
@@ -82,7 +82,7 @@ def parse_command_path(path):
     if action.upper() in iptables.RULE_TARGETS:
         try:
             return action, build_rule(p)
-        except ValueError, e:
+        except ValueError as e:
             raise PathError(path, e.message)
     
     if action == 'list':
@@ -204,7 +204,7 @@ def build_rule(p):
 
 
 def parse_command_query(query):
-    params = dict(urlparse.parse_qsl(query))
+    params = dict(urllib.parse_qsl(query))
     ret = {}
     
     expire = params.get('expire')
@@ -243,7 +243,7 @@ def parse_command(url):
     """
     # split input to path and query
     # path specifies the iptables Rule while query provides additional rfw parameters like expire or wait
-    parsed = urlparse.urlparse(url)
+    parsed = urllib.urlparse(url)
     path, query = parsed.path, parsed.query
 
     action, rule = parse_command_path(path)

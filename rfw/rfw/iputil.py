@@ -44,7 +44,7 @@ def long2ip(l):
 def mask2long(mask):
     """Convert numeric CIDR network mask to negative integer representation for bitwise operations.
     """
-    assert isinstance(mask, (int, long)) and mask >= 0 and mask <= 32
+    assert isinstance(mask, (int, int)) and mask >= 0 and mask <= 32
     return -(1 << (32 - mask)) 
 
 
@@ -103,7 +103,7 @@ def cidr_overlap(c1, c2):
 def ip_ranges_overlap(r1_ipstart, r1_ipend, r2_ipstart, r2_ipend):
     """Check if two IP ranges given as inclusive integer limited ranges overlap
     """
-    if not isinstance(r1_ipstart, (int, long)) or not isinstance(r1_ipend, (int, long)) or not isinstance(r2_ipstart, (int, long)) or not isinstance(r2_ipend, (int, long)):
+    if not isinstance(r1_ipstart, (int, int)) or not isinstance(r1_ipend, (int, int)) or not isinstance(r2_ipstart, (int, int)) or not isinstance(r2_ipend, (int, int)):
             raise ValueError('IP address should be integer')
     if r1_ipstart > r1_ipend or r2_ipstart > r2_ipend:
         raise ValueError('IP start cannot be greater than IP end. r1_ipstart={}, r1_ipend={}, r2_ipstart={}, r2_ipend={}'.format(r1_ipstart, r1_ipend, r2_ipstart, r2_ipend))

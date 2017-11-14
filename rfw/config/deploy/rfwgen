@@ -28,6 +28,7 @@
 
 import subprocess, os, re, sys, time
 
+
 def usage():
     usage = "rfwgen - key and certificate generator for rfw\n\nusage: rfwgen <server_ip>"
     return usage
@@ -53,7 +54,7 @@ def call(lcmd):
     try:
         out = subprocess.check_output(lcmd, stderr=subprocess.STDOUT)
         return out
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         print("Error code {} returned when called '{}'. Command output: '{}'".format(e.returncode, e.cmd, e.output))
         raise e
 
@@ -68,14 +69,14 @@ def abort():
 if __name__ == '__main__':
 
     if len(sys.argv) != 2:
-        print usage()
+        print(usage())
         sys.exit(-1)
     server_ip = validate_ip(sys.argv[1])
     if not server_ip:
-        print usage()
+        print(usage())
         sys.exit(-1)
 
-    os.umask(0077)
+    os.umask(0o077)
 
     server_dir = 'server_{}'.format(server_ip)
     ca_key = 'offline/ca.key'
@@ -87,7 +88,7 @@ if __name__ == '__main__':
     # check openssl if works
     try:
         call(['openssl', 'version'])
-    except OSError, e:
+    except OSError as e:
         print('Could not run openssl. Check if it is correctly installed.')
         abort()
    
@@ -100,7 +101,7 @@ if __name__ == '__main__':
         try:
             os.mkdir('offline')
             os.mkdir('client')
-        except OSError, e:
+        except OSError as e:
             # ignore the 'dir already exists' error 
             pass
         root_subj = "/C=IE/ST=Universe/L=Internet/O=rfw root CA {}".format(time.strftime("%Y-%m-%d %H:%M:%S"))
@@ -119,7 +120,7 @@ if __name__ == '__main__':
 
     step('Check existing server files for {}'.format(server_ip))
     if os.path.isfile(server_key) or os.path.isfile(server_crt):
-        overwrite = raw_input('Server key or certificate already exists in folder {}\nDo you want to overwrite (y/n)? [n]: '.format(server_dir))
+        overwrite = input('Server key or certificate already exists in folder {}\nDo you want to overwrite (y/n)? [n]: '.format(server_dir))
         if overwrite == 'y':
             try:
                 if os.path.isfile(server_key):
@@ -128,7 +129,7 @@ if __name__ == '__main__':
                     os.remove(server_crt)
                 if os.path.isfile(server_csr):
                     os.remove(server_csr)
-            except OSError, e:
+            except OSError as e:
                 print(e.message)
                 print('Could not remove existing files in {}.'.format(server_dir))
                 abort()
@@ -139,7 +140,7 @@ if __name__ == '__main__':
         
     try:
         os.mkdir(server_dir)
-    except OSError, e:
+    except OSError as e:
         # ignore the 'dir already exists' error 
         pass
 

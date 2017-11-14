@@ -39,7 +39,7 @@ def call(lcmd):
         if out: 
             log.debug("Call output: {}".format(out))
         return out
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         log.error("Error code {} returned when called '{}'. Command output: '{}'".format(e.returncode, e.cmd, e.output))
         raise e
 

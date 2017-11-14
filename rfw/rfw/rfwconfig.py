@@ -29,8 +29,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import logging, sys, types, os.path, re
-import config, iputil, timeutil
-from ConfigParser import NoOptionError
+from rfw import config, iputil, timeutil
+from configparser import NoOptionError
 
 log = logging.getLogger('rfw.rfwconfig')
 
@@ -58,10 +58,10 @@ class RfwConfig(config.Config):
             self.whitelist()  # it will also cache the whitelist result
             self.iptables_path()
             self.default_expire()
-        except config.ConfigError, e:
+        except config.ConfigError as e:
             log.error(str(e))
             sys.exit(1)
-        except Exception, e:
+        except Exception as e:
             # other errors need to be wrapped to include the config file path info
             log.error(self.config_error(str(e)))
             sys.exit(1)            
@@ -71,7 +71,7 @@ class RfwConfig(config.Config):
             if self.is_outward_server():
                 self.outward_server_certfile()
                 self.outward_server_keyfile()
-        except config.ConfigError, e:
+        except config.ConfigError as e:
             log.error(str(e))
             log.error('Before running rfw you must generate or import certificates. See /etc/rfw/deploy/README.rst')
             sys.exit(1)
@@ -97,7 +97,7 @@ class RfwConfig(config.Config):
         if self.is_outward_server():
             try:
                 return self._get("outward.server.ip")
-            except NoOptionError, e:
+            except NoOptionError as e:
                 raise self.config_error(str(e))
         else:
             raise self.config_error("outward.server.ip read while outward.server not enabled")
@@ -128,7 +128,7 @@ class RfwConfig(config.Config):
                     return port
                 else:
                     raise self.config_error("Wrong local.server.port value. It should be a single number from the 1..65535 range")
-            except NoOptionError, e:
+            except NoOptionError as e:
                 raise self.config_error(str(e))
         else:
             raise self.config_error("local.server.port read while local.server not enabled")
@@ -151,7 +151,7 @@ class RfwConfig(config.Config):
                     return username
                 else:
                     raise self.config_error("auth.username cannot be empty")
-            except NoOptionError, e:
+            except NoOptionError as e:
                 raise self.config_error(str(e))
         else:
             raise self.config_error("auth.username read while outward.server not enabled and local.server.authentication not enabled")
@@ -165,7 +165,7 @@ class RfwConfig(config.Config):
                     return password
                 else:
                     raise self.config_error("auth.password cannot be empty")
-            except NoOptionError, e:
+            except NoOptionError as e:
                 raise self.config_error(str(e))
         else:
             raise self.config_error("auth.password read while outward.server not enabled and local.server.authentication not enabled")
@@ -180,7 +180,7 @@ class RfwConfig(config.Config):
                 raise self.config_error("allowed values for {} are DROP or ACCEPT".format(name))
             else:
                 raise self.config_error("{} cannot be empty. Allowed values are DROP or ACCEPT".format(name))
-        except NoOptionError, e:
+        except NoOptionError as e:
             raise self.config_error(str(e))
 
 
