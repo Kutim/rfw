@@ -142,8 +142,9 @@ class Iptables:
         #out = subprocess.check_output([Iptables.ipt_path, '-n', '-L', '-v', '-x', '--line-numbers'], stderr=subprocess.STDOUT)
         chain = None
         header = None
-        for line in out.split('\n'):
+        for line in out.split(b'\n'):
             line = line.strip()
+            line=str(line,encoding="utf-8")
             if not line:
                 chain = None  #on blank line reset current chain
                 continue
@@ -152,7 +153,7 @@ class Iptables:
                 chain = m.group(1)
                 continue
             if "source" in line and "destination" in line:
-                # check if iptables output headers make sense 
+                # check if iptables output headers make sense
                 assert line.split()  == IPTABLES_HEADERS
                 continue
             if chain:
